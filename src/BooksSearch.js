@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import * as BooksAPI from './BooksAPI';
 import { Link } from 'react-router-dom';
-import escapeRegExp from 'escape-string-regexp';
 import sortBy from 'sort-by'
 import Book from './Book'
 
@@ -39,20 +38,11 @@ class BooksSearch extends Component {
 
     let showingBooks
     if (query) {
-      const match = new RegExp(escapeRegExp(query), 'i')
-      showingBooks = searchBooks.filter((c) => match.test(c.title))
-
-      for (let i = 0; i < searchBooks.length; i++) {
-        for (let j = 0; j < books.length; j++) {
-          if (searchBooks[i].id === books[j].id) {
-            searchBooks[i].shelf = books[j].shelf;
-            break;
-          }
-          else {
-            searchBooks[i].shelf = 'none';
-          }
-        }
-      }
+      showingBooks = searchBooks.map(book => {
+        const match = books.find(b => book.id === b.id);
+        book.shelf = "none"
+        return match? match : book;
+      })
     }
     else {
       showingBooks = searchBooks
